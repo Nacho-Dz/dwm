@@ -131,7 +131,8 @@ static Key keys[] = {
 	{ MODKEY,           XK_t,         spawn,          {.v = (const char*[]){ terminal, "htop", NULL } } },
 	{ MODKEY,           XK_r,         spawn,          {.v = (const char*[]){ terminal, "rover", NULL } } },
 	{ MODKEY,           XK_n,         spawn,          {.v = (const char*[]){ terminal, "newsboat", NULL } } },
-	{ 0,                XK_Print,     spawn,          {.v = (const char*[]){ "maimpick", NULL } } },
+	{ 0,                XK_Print,     spawn,          SHCMD("maim ~/Pictures/screenshots/full/$(date +%s).png") },
+	{ MODKEY,           XK_Print,     spawn,          {.v = (const char*[]){ "maimpick", NULL } } },
 };
 
 /* button definitions */
