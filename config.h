@@ -30,22 +30,22 @@ static const char *colors[][3] = {
 };
 
 /* tagging */
-static const char *tags[] = { "", "", "", "", "", "", "", "", "" };
+static const char *tags[] = { "", "", "", "", "", "", "", "", "" };
 
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	*/
-	/* class    instance       title       	    tags mask    isfloating   isterminal   noswallow   monitor */
-	{ "Gimp",     NULL,        NULL,       	    0,           1,           0,           0,          -1 },
-	{ NULL,       "Navigator", NULL,            1 << 2,      0,           0,           0,          -1 },
-	{ "discord",  NULL,        NULL,            1 << 3,      0,           0,           0,          -1 },
-	{ NULL,       NULL,        "rover",         1 << 6,      0,           0,           0,          -1 },
-	{ "Zathura",  NULL,        NULL,            1 << 7,      0,           0,           0,          -1 },
-	{ NULL,       NULL,        "htop",          1 << 8,      0,           0,           0,          -1 },
-	{ "St",       NULL,        "st",            1 << 1,      0,           1,           0,          -1 },
-	{ NULL,       NULL,        "Event Tester",  0,           0,           0,           1,          -1 },
+	/* class            instance     title       	 tags mask    isfloating   isterminal   noswallow   monitor */
+	{ "Gimp",           NULL,        NULL,       	 0,           1,           0,           0,          -1 },
+	{ "Pinentry-gtk-2", NULL,        NULL,           0,           1,           0,           1,          -1 },
+	{ "St",             NULL,        "st",           1 << 1,      0,           1,           0,          -1 },
+	{ NULL,             "Navigator", NULL,           1 << 3,      0,           0,           0,          -1 },
+	{ "discord",        NULL,        NULL,           1 << 4,      0,           0,           0,          -1 },
+	{ NULL,             NULL,        "rover",        1 << 6,      0,           0,           0,          -1 },
+	{ NULL,             NULL,        "htop",         1 << 8,      0,           0,           0,          -1 },
+	{ NULL,             NULL,        "Event Tester", 0,           0,           0,           1,          -1 },
 };
 
 /* layout(s) */
@@ -61,8 +61,6 @@ static const Layout layouts[] = {
 	{ "[M]",      monocle },
 };
 
-/* #include "vanitygaps.c" */
-
 /* key definitions */
 #define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
@@ -73,6 +71,7 @@ static const Layout layouts[] = {
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+/* helper for spawning commands */
 #define SPAWN(...) {.v = (const char*[]){ __VA_ARGS__, NULL } }
 
 /* commands */
@@ -104,8 +103,8 @@ static Key keys[] = {
 	{ MODKEY,           XK_o,         setlayout,      {0} },
 	{ MODKEY,           XK_0,         view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask, XK_0,         tag,            {.ui = ~0 } },
-	{ MODKEY,           XK_Right,     viewnext,       {0} },
-	{ MODKEY,           XK_Left,      viewprev,       {0} },
+	{ MODKEY,           XK_Right,     viewnextused,   {0} },
+	{ MODKEY,           XK_Left,      viewprevused,   {0} },
 	{ MODKEY|ShiftMask, XK_Right,     tagtonext,      {0} },
 	{ MODKEY|ShiftMask, XK_Left,      tagtoprev,      {0} },
 	TAGKEYS(            XK_1,                         0)
@@ -118,21 +117,21 @@ static Key keys[] = {
 	TAGKEYS(            XK_8,                         7)
 	TAGKEYS(            XK_9,                         8)
 	{ MODKEY|ShiftMask, XK_q,         quit,           {0} },
-	{ MODKEY,           XK_BackSpace, spawn,          {.v = (const char*[]){ "sysact", NULL } } },
+	{ MODKEY,           XK_BackSpace, spawn,          SPAWN("sysact") },
 	{ MODKEY,           XK_F1,        spawn,          SHCMD("groff -mom /usr/local/share/dwm/larbs.mom -Tpdf | zathura -") },
-	{ MODKEY,           XK_F2,        statusbarcmd,   {.v = (const Arg[]){ {.v = (const char*[]){ terminal, "pulsemixer", NULL } }, { .i = 10 }, {.i = 1 } } } },
-	{ MODKEY,           XK_comma,     statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-d5"), { .i = 10 }, {0} } } },
-	{ MODKEY|ShiftMask, XK_comma,     statusbarcmd,   {.v = (const Arg[]){ {.v = (const char*[]){ "pamixer", "-d15", NULL } }, { .i = 10 }, {0} } } },
-	{ MODKEY,           XK_period,    statusbarcmd,   {.v = (const Arg[]){ {.v = (const char*[]){ "pamixer", "-i5", NULL } }, { .i = 10 }, {0} } } },
-	{ MODKEY|ShiftMask, XK_period,    statusbarcmd,   {.v = (const Arg[]){ {.v = (const char*[]){ "pamixer", "-i15", NULL } }, { .i = 10 }, {0} } } },
-	{ MODKEY,           XK_m,         statusbarcmd,   {.v = (const Arg[]){ {.v = (const char*[]){ "pamixer", "-t", NULL } }, { .i = 10 }, {0} } } },
-	{ MODKEY,           XK_w,         spawn,          {.v = (const char*[]){ "firefox", NULL } } },
-	{ MODKEY,           XK_c,         spawn,          {.v = (const char*[]){ "discord", NULL } } },
-	{ MODKEY,           XK_t,         spawn,          {.v = (const char*[]){ terminal, "htop", NULL } } },
-	{ MODKEY,           XK_r,         spawn,          {.v = (const char*[]){ terminal, "rover", NULL } } },
-	{ MODKEY,           XK_n,         spawn,          {.v = (const char*[]){ terminal, "newsboat", NULL } } },
+	{ MODKEY,           XK_F2,        statusbarcmd,   {.v = (const Arg[]){ SPAWN(terminal, "pulsemixer"), {.i = 10 }, {.i = 1 } } } },
+	{ MODKEY,           XK_m,         statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-t"), {.i = 10 }, {0} } } },
+	{ MODKEY,           XK_comma,     statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-d5"), {.i = 10 }, {0} } } },
+	{ MODKEY,           XK_period,    statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-i5"), {.i = 10 }, {0} } } },
+	{ MODKEY|ShiftMask, XK_comma,     statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-d15"), {.i = 10 }, {0} } } },
+	{ MODKEY|ShiftMask, XK_period,    statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-i15"), {.i = 10 }, {0} } } },
 	{ 0,                XK_Print,     spawn,          SHCMD("maim ~/Pictures/screenshots/full/$(date +%s).png") },
-	{ MODKEY,           XK_Print,     spawn,          {.v = (const char*[]){ "maimpick", NULL } } },
+	{ MODKEY,           XK_Print,     spawn,          SPAWN("maimpick") },
+	{ MODKEY,           XK_w,         spawn,          SPAWN("librewolf") },
+	{ MODKEY,           XK_c,         spawn,          SPAWN("discord") },
+	{ MODKEY,           XK_t,         spawn,          SPAWN(terminal, "htop") },
+	{ MODKEY,           XK_r,         spawn,          SPAWN(terminal, "rover") },
+	{ MODKEY,           XK_n,         spawn,          SPAWN(terminal, "newsboat") },
 };
 
 /* button definitions */
