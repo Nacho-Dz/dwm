@@ -197,9 +197,11 @@ static void monocle(Monitor *m);
 static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
 static unsigned int nexttag(void);
+static unsigned int nextusedtag(void);
 static Client *nexttiled(Client *c);
 static void pop(Client *);
 static unsigned int prevtag(void);
+static unsigned int prevusedtag(void);
 static void propertynotify(XEvent *e);
 static void quit(const Arg *arg);
 static Monitor *recttomon(int x, int y, int w, int h);
@@ -248,7 +250,9 @@ static void updatewindowtype(Client *c);
 static void updatewmhints(Client *c);
 static void view(const Arg *arg);
 static void viewnext(const Arg *arg);
+static void viewnextused(const Arg *arg);
 static void viewprev(const Arg *arg);
+static void viewprevused(const Arg *arg);
 static Client *wintoclient(Window w);
 static Monitor *wintomon(Window w);
 static int xerror(Display *dpy, XErrorEvent *ee);
@@ -520,9 +524,15 @@ buttonpress(XEvent *e)
 	}
 	if (ev->window == selmon->barwin) {
 		i = x = 0;
-		do
+		unsigned int occ = 0;
+		for(c = m->clients; c; c=c->next)
+			occ |= c->tags;
+		do {
+			/* Do not reserve space for vacant tags */
+			if (!(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
+				continue;
 			x += TEXTW(tags[i]);
-		while (ev->x >= x && ++i < LENGTH(tags));
+		} while (ev->x >= x && ++i < LENGTH(tags));
 		if (i < LENGTH(tags)) {
 			click = ClkTagBar;
 			arg.ui = 1 << i;
@@ -839,13 +849,12 @@ drawbar(Monitor *m)
 	}
 	x = 0;
 	for (i = 0; i < LENGTH(tags); i++) {
+		/* Do not draw vacant tags */
+		if(!(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
+			continue;
 		w = TEXTW(tags[i]);
 		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
 		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
-		if (occ & 1 << i)
-			drw_rect(drw, x + boxs, boxs, boxw, boxw,
-				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
-				urg & 1 << i);
 		x += w;
 	}
 	w = blw = TEXTW(m->ltsymbol);
@@ -1343,6 +1352,29 @@ nexttag(void)
 	return seltag == (1 << (LENGTH(tags) - 1)) ? 1 : seltag << 1;
 }
 
+unsigned int
+nextusedtag(void)
+{
+	unsigned int seltag = selmon->tagset[selmon->seltags];
+	unsigned int usedtags = 0;
+	Client *c = selmon->clients;
+
+	if (!c)
+		return seltag;
+
+	/* skip vacant tags */
+	do {
+		usedtags |= c->tags;
+		c = c->next;
+	} while (c);
+
+	do {
+		seltag = seltag == (1 << (LENGTH(tags) - 1)) ? 1 : seltag << 1;
+	} while (!(seltag & usedtags));
+
+	return seltag;
+}
+
 pid_t
 winpid(Window w)
 {
@@ -1494,6 +1526,28 @@ prevtag(void)
 {
 	unsigned int seltag = selmon->tagset[selmon->seltags];
 	return seltag == 1 ? (1 << (LENGTH(tags) - 1)) : seltag >> 1;
+}
+
+unsigned int
+prevusedtag(void)
+{
+	unsigned int seltag = selmon->tagset[selmon->seltags];
+	unsigned int usedtags = 0;
+	Client *c = selmon->clients;
+	if (!c)
+		return seltag;
+
+	/* skip vacant tags */
+	do {
+		usedtags |= c->tags;
+		c = c->next;
+	} while (c);
+
+	do {
+		seltag = seltag == 1 ? (1 << (LENGTH(tags) - 1)) : seltag >> 1;
+	} while (!(seltag & usedtags));
+
+	return seltag;
 }
 
 void
@@ -2442,9 +2496,21 @@ viewnext(const Arg *arg)
 }
 
 void
+viewnextused(const Arg *arg)
+{
+	view(&(const Arg){.ui = nextusedtag()});
+}
+
+void
 viewprev(const Arg *arg)
 {
 	view(&(const Arg){.ui = prevtag()});
+}
+ 
+void
+viewprevused(const Arg *arg)
+{
+	view(&(const Arg){.ui = prevusedtag()});
 }
  
 Client *
