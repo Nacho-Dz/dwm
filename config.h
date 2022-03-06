@@ -30,7 +30,7 @@ static const char *colors[][3] = {
 };
 
 /* tagging */
-static const char *tags[] = { "", "", "", "", "", "", "", "", "" };
+static const char *tags[] = { "", "", "", "", "", "", "", "", "" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -39,12 +39,12 @@ static const Rule rules[] = {
 	*/
 	/* class            instance     title       	 tags mask    isfloating   isterminal   noswallow   monitor */
 	{ "Gimp",           NULL,        NULL,       	 0,           1,           0,           0,          -1 },
-	{ "Pinentry-gtk-2", NULL,        NULL,           0,           1,           0,           1,          -1 },
 	{ "St",             NULL,        "st",           1 << 1,      0,           1,           0,          -1 },
 	{ NULL,             "Navigator", NULL,           1 << 3,      0,           0,           0,          -1 },
 	{ "discord",        NULL,        NULL,           1 << 4,      0,           0,           0,          -1 },
-	{ NULL,             NULL,        "rover",        1 << 6,      0,           0,           0,          -1 },
-	{ NULL,             NULL,        "htop",         1 << 8,      0,           0,           0,          -1 },
+	{ "St",             NULL,        "newsboat",     1 << 6,      0,           0,           0,          -1 },
+	{ "St",             NULL,        "rover",        1 << 7,      0,           0,           0,          -1 },
+	{ "St",             NULL,        "htop",         1 << 8,      0,           0,           0,          -1 },
 	{ NULL,             NULL,        "Event Tester", 0,           0,           0,           1,          -1 },
 };
 
