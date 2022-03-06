@@ -1011,8 +1011,6 @@ getstatusbarpid()
 	FILE *fp;
 	char *ret;
 
-	if (statuspid > 0 && kill(statuspid, 0) == 0)
-		return statuspid;
 	if (!(fp = popen("pidof -s dwmblocks", "r")))
 		return -1;
 	ret = fgets(buf, sizeof(buf), fp);
@@ -1985,11 +1983,11 @@ sigstatusbar(const Arg *arg)
 
 	if (!statussig)
 		return;
-	sv.sival_int = arg->i;
-	if ((statuspid = getstatusbarpid()) <= 0)
-		return;
+	sv.sival_int = (statussig << 8) | arg->i;
 
-	sigqueue(statuspid, SIGRTMIN+statussig, sv);
+	while (sigqueue(statuspid, SIGUSR1, sv) < 0 && errno == ESRCH)
+		if ((statuspid = getstatusbarpid()) < 0)
+			return;
 }
 
 pid_t
@@ -2025,11 +2023,10 @@ statusbarcmd(const Arg *arg)
 		return;
 	childpid = spawn_((char *const *)(((Arg *)arg->v)[0].v));
 	
-	if ((statuspid = getstatusbarpid()) <= 0)
-		return;
-
 	waitpid(childpid, NULL, 0);
-	kill(statuspid, SIGRTMIN + ((Arg *)arg->v)[1].i);
+	while (kill(statuspid, SIGRTMIN + ((Arg *)arg->v)[1].i) < 0 && errno == ESRCH)
+		if ((statuspid = getstatusbarpid()) < 0)
+			return;
 }
 
 void
