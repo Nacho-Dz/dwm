@@ -118,7 +118,6 @@ static Key keys[] = {
 	TAGKEYS(            XK_9,                         8)
 	{ MODKEY|ShiftMask, XK_q,         quit,           {0} },
 	{ MODKEY,           XK_BackSpace, spawn,          SPAWN("sysact") },
-	{ MODKEY,           XK_F1,        spawn,          SHCMD("groff -mom /usr/local/share/dwm/larbs.mom -Tpdf | zathura -") },
 	{ MODKEY,           XK_F2,        statusbarcmd,   {.v = (const Arg[]){ SPAWN(terminal, "pulsemixer"), {.i = 10 }, {.i = 1 } } } },
 	{ MODKEY,           XK_m,         statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-t"), {.i = 10 }, {0} } } },
 	{ MODKEY,           XK_comma,     statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-d5"), {.i = 10 }, {0} } } },
