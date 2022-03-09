@@ -271,7 +271,7 @@ static const char broken[] = "broken";
 static char stext[256];
 static int statusw;
 static int statussig;
-static pid_t statuspid = -1;
+static pid_t statuspid = INT_MAX;
 static int screen;
 static int sw, sh;           /* X display screen geometry width, height */
 static int bh, blw = 0;      /* bar geometry */
