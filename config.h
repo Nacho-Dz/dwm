@@ -126,6 +126,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask, XK_period,    statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-i15"), {.i = 10 }, {0} } } },
 	{ 0,                XK_Print,     spawn,          SHCMD("maim ~/Pictures/screenshots/full/$(date +%s).png") },
 	{ MODKEY,           XK_Print,     spawn,          SPAWN("maimpick") },
+	{ MODKEY,           XK_x,         spawn,          SPAWN("xcolor", "-s") },
 	{ MODKEY,           XK_w,         spawn,          SPAWN("librewolf") },
 	{ MODKEY,           XK_c,         spawn,          SPAWN("discord") },
 	{ MODKEY,           XK_t,         spawn,          SPAWN(terminal, "htop") },
