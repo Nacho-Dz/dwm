@@ -8,21 +8,21 @@ static int swallowfloating          = 0;        /* 1 means swallow floating wind
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "monospace:size=11" };
-static const char dmenufont[]       = "monospace:size=10";
+static const char dmenufont[]       = "monospace:size=11";
 
 /* colorscheme */
 /* background */
-static const char normbgcolor[]           = "#222222";
+static const char normbgcolor[]           = "#2e333e";
 /* inactive window border */
-static const char normbordercolor[]       = "#444444";
+static const char normbordercolor[]       = "#000000";
 /* font color */
-static const char normfgcolor[]           = "#bbbbbb";
+static const char normfgcolor[]           = "#d3a61f";
 /* selected tag and window font */
-static const char selfgcolor[]            = "#eeeeee";
+static const char selfgcolor[]            = "#333333";
 /* bar color */
-static const char selbgcolor[]            = "#990044";
+static const char selbgcolor[]            = "#faf1c8";
 /* active window border */
-static const char selbordercolor[]        = "#757575";
+static const char selbordercolor[]        = "#808080";
 static const char *colors[][3] = {
        /*               fg           bg           border   */
        [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
@@ -43,7 +43,7 @@ static const Rule rules[] = {
 	{ NULL,             "Navigator", NULL,           1 << 3,      0,           0,           0,          -1 },
 	{ "discord",        NULL,        NULL,           1 << 4,      0,           0,           0,          -1 },
 	{ "St",             NULL,        "newsboat",     1 << 6,      0,           0,           0,          -1 },
-	{ "St",             NULL,        "rover",        1 << 7,      0,           0,           0,          -1 },
+	{ "St",             NULL,        "nnn",          1 << 7,      0,           0,           0,          -1 },
 	{ "St",             NULL,        "htop",         1 << 8,      0,           0,           0,          -1 },
 	{ NULL,             NULL,        "Event Tester", 0,           0,           0,           1,          -1 },
 };
@@ -87,10 +87,10 @@ static Key keys[] = {
 	{ MODKEY,           XK_p,         spawn,          {.v = passcmd } },
 	{ MODKEY,           XK_Return,    spawn,          {.v = termcmd } },
 	{ MODKEY,           XK_b,         togglebar,      {0} },
-	{ MODKEY,           XK_j,         focusstack,     {.i = +1 } },
-	{ MODKEY,           XK_k,         focusstack,     {.i = -1 } },
-	{ MODKEY,           XK_Up,        incnmaster,     {.i = +1 } },
+	{ MODKEY,           XK_j,         focusstack,     {.i = -1 } },
+	{ MODKEY,           XK_k,         focusstack,     {.i = +1 } },
 	{ MODKEY,           XK_Down,      incnmaster,     {.i = -1 } },
+	{ MODKEY,           XK_Up,        incnmaster,     {.i = +1 } },
 	{ MODKEY,           XK_h,         setmfact,       {.f = -0.05} },
 	{ MODKEY,           XK_l,         setmfact,       {.f = +0.05} },
 	{ MODKEY,           XK_space,     zoom,           {0} },
@@ -130,7 +130,7 @@ static Key keys[] = {
 	{ MODKEY,           XK_w,         spawn,          SPAWN("librewolf") },
 	{ MODKEY,           XK_c,         spawn,          SPAWN("discord") },
 	{ MODKEY,           XK_t,         spawn,          SPAWN(terminal, "htop") },
-	{ MODKEY,           XK_r,         spawn,          SPAWN(terminal, "rover") },
+	{ MODKEY,           XK_r,         spawn,          SPAWN(terminal, "nnn") },
 	{ MODKEY,           XK_n,         spawn,          SPAWN(terminal, "newsboat") },
 };
 
