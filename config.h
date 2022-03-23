@@ -39,13 +39,14 @@ static const Rule rules[] = {
 	*/
 	/* class            instance     title       	 tags mask    isfloating   isterminal   noswallow   monitor */
 	{ "Gimp",           NULL,        NULL,       	 0,           1,           0,           0,          -1 },
-	{ "St",             NULL,        "st",           1 << 1,      0,           1,           0,          -1 },
+	{ "st-256color",    NULL,        "st",           1 << 1,      0,           1,           0,          -1 },
 	{ NULL,             "Navigator", NULL,           1 << 3,      0,           0,           0,          -1 },
 	{ "discord",        NULL,        NULL,           1 << 4,      0,           0,           0,          -1 },
-	{ "St",             NULL,        "newsboat",     1 << 6,      0,           0,           0,          -1 },
-	{ "St",             NULL,        "nnn",          1 << 7,      0,           0,           0,          -1 },
-	{ "St",             NULL,        "htop",         1 << 8,      0,           0,           0,          -1 },
+	{ "st-256color",    NULL,        "newsboat",     1 << 6,      0,           0,           0,          -1 },
+	{ "st-256color",    NULL,        "nnn",          1 << 7,      0,           0,           0,          -1 },
+	{ "st-256color",    NULL,        "htop",         1 << 8,      0,           0,           0,          -1 },
 	{ NULL,             NULL,        "Event Tester", 0,           0,           0,           1,          -1 },
+	{ "Pinentry-gtk-2", NULL,        NULL,           0,           1,           0,           1,          -1 },
 };
 
 /* layout(s) */
@@ -89,8 +90,8 @@ static Key keys[] = {
 	{ MODKEY,           XK_b,         togglebar,      {0} },
 	{ MODKEY,           XK_j,         focusstack,     {.i = -1 } },
 	{ MODKEY,           XK_k,         focusstack,     {.i = +1 } },
-	{ MODKEY,           XK_Down,      incnmaster,     {.i = -1 } },
-	{ MODKEY,           XK_Up,        incnmaster,     {.i = +1 } },
+	{ MODKEY,           XK_a,         incnmaster,     {.i = -1 } },
+	{ MODKEY,           XK_s,         incnmaster,     {.i = +1 } },
 	{ MODKEY,           XK_h,         setmfact,       {.f = -0.05} },
 	{ MODKEY,           XK_l,         setmfact,       {.f = +0.05} },
 	{ MODKEY,           XK_space,     zoom,           {0} },
@@ -103,10 +104,10 @@ static Key keys[] = {
 	{ MODKEY,           XK_o,         setlayout,      {0} },
 	{ MODKEY,           XK_0,         view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask, XK_0,         tag,            {.ui = ~0 } },
-	{ MODKEY,           XK_Right,     viewnextused,   {0} },
-	{ MODKEY,           XK_Left,      viewprevused,   {0} },
-	{ MODKEY|ShiftMask, XK_Right,     tagtonext,      {0} },
-	{ MODKEY|ShiftMask, XK_Left,      tagtoprev,      {0} },
+	{ MODKEY,           XK_x,         viewnextused,   {0} },
+	{ MODKEY,           XK_z,         viewprevused,   {0} },
+	{ MODKEY|ShiftMask, XK_x,         tagtonext,      {0} },
+	{ MODKEY|ShiftMask, XK_z,         tagtoprev,      {0} },
 	TAGKEYS(            XK_1,                         0)
 	TAGKEYS(            XK_2,                         1)
 	TAGKEYS(            XK_3,                         2)
@@ -126,9 +127,9 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask, XK_period,    statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-i15"), {.i = 10 }, {0} } } },
 	{ 0,                XK_Print,     spawn,          SHCMD("maim ~/Pictures/screenshots/full/$(date +%s).png") },
 	{ MODKEY,           XK_Print,     spawn,          SPAWN("maimpick") },
-	{ MODKEY,           XK_x,         spawn,          SPAWN("xcolor", "-s") },
+	{ MODKEY,           XK_c,         spawn,          SPAWN("xcolor", "-s") },
 	{ MODKEY,           XK_w,         spawn,          SPAWN("librewolf") },
-	{ MODKEY,           XK_c,         spawn,          SPAWN("discord") },
+	{ MODKEY,           XK_e,         spawn,          SPAWN("discord") },
 	{ MODKEY,           XK_t,         spawn,          SPAWN(terminal, "htop") },
 	{ MODKEY,           XK_r,         spawn,          SPAWN(terminal, "nnn") },
 	{ MODKEY,           XK_n,         spawn,          SPAWN(terminal, "newsboat") },
