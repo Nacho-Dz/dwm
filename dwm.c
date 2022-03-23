@@ -455,7 +455,7 @@ attachstack(Client *c)
 void
 autostart(void)
 {
-	spawn_((char*const[]){"dwmblocks", NULL});
+	statuspid = spawn_((char*const[]){"dwmblocks", NULL});
 }
 
 void
