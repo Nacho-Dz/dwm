@@ -587,6 +587,11 @@ cleanup(void)
 	Monitor *m;
 	size_t i;
 
+	while (kill(statuspid, SIGTERM) < 0 && errno == ESRCH)
+		if ((statuspid = getstatusbarpid()) < 0)
+			break;
+    waitpid(statuspid, NULL, 0);
+
 	view(&a);
 	selmon->lt[selmon->sellt] = &foo;
 	for (m = mons; m; m = m->next)
@@ -1988,7 +1993,7 @@ sigstatusbar(const Arg *arg)
 
 	while (sigqueue(statuspid, SIGUSR1, sv) < 0 && errno == ESRCH)
 		if ((statuspid = getstatusbarpid()) < 0)
-			return;
+			break;
 }
 
 pid_t
@@ -2027,7 +2032,7 @@ statusbarcmd(const Arg *arg)
 	waitpid(childpid, NULL, 0);
 	while (kill(statuspid, SIGRTMIN + ((Arg *)arg->v)[1].i) < 0 && errno == ESRCH)
 		if ((statuspid = getstatusbarpid()) < 0)
-			return;
+			break;
 }
 
 void
