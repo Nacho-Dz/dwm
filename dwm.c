@@ -72,6 +72,7 @@
 #define STR_(x) #x
 #define STR(x) STR_(x)
 #define DSBLOCKSLOCKFILE        "/run/user/" STR(UID) "/dsblocks.pid"
+#define NOSIGCHAR               '\x0a'
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
@@ -599,9 +600,10 @@ cleanup(void)
 
 	while (kill(statuspid, SIGTERM) < 0 && errno == ESRCH)
 		if ((statuspid = getstatusbarpid()) < 0)
-			break;
+			goto nosb;
     waitpid(statuspid, NULL, 0);
 
+nosb:
 	view(&a);
 	selmon->lt[selmon->sellt] = &foo;
 	for (m = mons; m; m = m->next)
@@ -2007,7 +2009,7 @@ sigstatusbar(const Arg *arg)
 {
 	union sigval sv;
 
-	if (!statussig)
+	if (!statussig || statussig == NOSIGCHAR)
 		return;
 	sv.sival_int = (statussig << 8) | arg->i;
 
