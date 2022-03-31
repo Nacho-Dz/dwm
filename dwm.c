@@ -513,7 +513,7 @@ buttonpress(XEvent *e)
 	Client *c;
 	Monitor *m;
 	XButtonPressedEvent *ev = &e->xbutton;
-	char *text, *s, ch;
+	char *text, *s, tmp;
 
 	click = ClkRootWin;
 	/* focus monitor if necessary */
@@ -544,14 +544,14 @@ buttonpress(XEvent *e)
 			statussig = 0;
 			for (text = s = stext; *s && x <= ev->x; s++) {
 				if ((unsigned char)(*s) < ' ') {
-					ch = *s;
+					tmp = *s;
 					*s = '\0';
 					x += TEXTW(text) - lrpad;
-					*s = ch;
+					*s = tmp;
 					text = s + 1;
 					if (x >= ev->x)
 						break;
-					statussig = ch;
+					statussig = tmp;
 				}
 			}
 		} else
