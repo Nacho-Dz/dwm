@@ -29,6 +29,12 @@ static const char *colors[][3] = {
        [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 };
 
+enum {
+    SIGCALENDAR = 1,
+    SIGCPUTEMP = 2,
+    SIGVOLUME = 3,
+};
+
 /* tagging */
 static const char *tags[] = { "", "", "", "", "", "", "", "", "" };
 
@@ -119,13 +125,13 @@ static Key keys[] = {
 	TAGKEYS(            XK_9,                         8)
 	{ MODKEY|ShiftMask, XK_q,         quit,           {0} },
 	{ MODKEY,           XK_BackSpace, spawn,          SPAWN("sysact") },
-	{ MODKEY,           XK_F2,        statusbarcmd,   {.v = (const Arg[]){ SPAWN(terminal, "pulsemixer"), {.i = 10 }, {.i = 1 } } } },
-	{ MODKEY,           XK_m,         statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-t"), {.i = 10 }, {0} } } },
-	{ MODKEY|ShiftMask, XK_m,         statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "--default-source", "-t"), {.i = 10 }, {0} } } },
-	{ MODKEY,           XK_comma,     statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-d5"), {.i = 10 }, {0} } } },
-	{ MODKEY,           XK_period,    statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-i5"), {.i = 10 }, {0} } } },
-	{ MODKEY|ShiftMask, XK_comma,     statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "--default-source", "-d5"), {.i = 10 }, {0} } } },
-	{ MODKEY|ShiftMask, XK_period,    statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "--default-source", "-i5"), {.i = 10 }, {0} } } },
+	{ MODKEY,           XK_F2,        statusbarcmd,   {.v = (const Arg[]){ SPAWN(terminal, "pulsemixer"), {.i = SIGVOLUME }, {.i = 1 } } } },
+	{ MODKEY,           XK_m,         statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-t"), {.i = SIGVOLUME }, {0} } } },
+	{ MODKEY|ShiftMask, XK_m,         statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "--default-source", "-t"), {.i = SIGVOLUME }, {0} } } },
+	{ MODKEY,           XK_comma,     statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-d5"), {.i = SIGVOLUME }, {0} } } },
+	{ MODKEY,           XK_period,    statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-i5"), {.i = SIGVOLUME }, {0} } } },
+	{ MODKEY|ShiftMask, XK_comma,     statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "--default-source", "-d5"), {.i = SIGVOLUME }, {0} } } },
+	{ MODKEY|ShiftMask, XK_period,    statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "--default-source", "-i5"), {.i = SIGVOLUME }, {0} } } },
 	{ 0,                XK_Print,     spawn,          SHCMD("maim ~/Pictures/screenshots/full/$(date +%s).png") },
 	{ MODKEY,           XK_Print,     spawn,          SPAWN("maimpick") },
 	{ MODKEY,           XK_c,         spawn,          SPAWN("xcolor", "-s") },
