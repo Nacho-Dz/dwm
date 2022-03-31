@@ -20,6 +20,7 @@
  *
  * To understand everything else, start reading main().
  */
+#include <fcntl.h>
 #include <errno.h>
 #include <locale.h>
 #include <signal.h>
@@ -62,6 +63,15 @@
 #define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
 #define TAGMASK                 ((1 << LENGTH(tags)) - 1)
 #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
+
+/* try with the default UID */
+#ifndef UID
+#define UID 1000
+#endif
+
+#define STR_(x) #x
+#define STR(x) STR_(x)
+#define DSBLOCKSLOCKFILE        "/run/user/" STR(UID) "/dsblocks.pid"
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
@@ -455,7 +465,7 @@ attachstack(Client *c)
 void
 autostart(void)
 {
-	statuspid = spawn_((char*const[]){"dwmblocks", NULL});
+	statuspid = spawn_((char*const[]){"dsblocks", NULL});
 }
 
 void
@@ -1013,15 +1023,25 @@ getatomprop(Client *c, Atom prop)
 pid_t
 getstatusbarpid()
 {
-	char buf[32];
-	FILE *fp;
-	char *ret;
+    struct flock fl;
+    int fd, ret;
 
-	if (!(fp = popen("pidof -s dwmblocks", "r")))
-		return -1;
-	ret = fgets(buf, sizeof(buf), fp);
-	pclose(fp);
-	return ret ? strtol(buf, NULL, 10) : -1;
+    if ((fd = open(DSBLOCKSLOCKFILE, O_RDONLY)) == -1)
+        return -1;
+
+    fl.l_type = F_WRLCK;
+    fl.l_whence = SEEK_SET;
+    fl.l_start = 0;
+    fl.l_len = 0;
+    ret = fcntl(fd, F_GETLK, &fl);
+    close(fd);
+
+    if (ret == -1 || fl.l_type != F_WRLCK) {
+        unlink(DSBLOCKSLOCKFILE);
+        return -1;
+    }
+
+    return fl.l_pid;
 }
 
 int
