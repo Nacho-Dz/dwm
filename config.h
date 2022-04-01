@@ -30,9 +30,11 @@ static const char *colors[][3] = {
 };
 
 enum {
-    SIGCALENDAR = 1,
-    SIGCPUTEMP = 2,
+    /* SIGNETTRAF = 0, */
+    SIGCPU = 1,
+    SIGMEM = 2,
     SIGVOLUME = 3,
+    SIGCALENDAR = 4,
 };
 
 /* tagging */
