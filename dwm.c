@@ -73,6 +73,7 @@
 #define STR(x) STR_(x)
 #define DSBLOCKSLOCKFILE        "/run/user/" STR(UID) "/dsblocks.pid"
 #define NOSIGCHAR               '\x0a'
+#define NILL                    INT_MIN
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
@@ -598,12 +599,13 @@ cleanup(void)
 	Monitor *m;
 	size_t i;
 
-	while (kill(statuspid, SIGTERM) < 0 && errno == ESRCH)
-		if ((statuspid = getstatusbarpid()) < 0)
-			goto nosb;
-    waitpid(statuspid, NULL, 0);
+    if (statuspid > 0)
+        while (kill(statuspid, SIGTERM) < 0 && errno == ESRCH)
+            if ((statuspid = getstatusbarpid()) < 0)
+                break;
+    if (statuspid > 0)
+        waitpid(statuspid, NULL, 0);
 
-nosb:
 	view(&a);
 	selmon->lt[selmon->sellt] = &foo;
 	for (m = mons; m; m = m->next)
@@ -2046,13 +2048,15 @@ void
 statusbarcmd(const Arg *arg)
 {
 	pid_t childpid;
+    union sigval sv;
 
 	if (((Arg *)arg->v)[2].i && fork() != 0)
 		return;
 	childpid = spawn_((char *const *)(((Arg *)arg->v)[0].v));
 	
 	waitpid(childpid, NULL, 0);
-	while (kill(statuspid, SIGRTMIN + ((Arg *)arg->v)[1].i) < 0 && errno == ESRCH)
+	sv.sival_int = NILL;
+	while (sigqueue(statuspid, SIGRTMIN + ((Arg *)arg->v)[1].i, sv) < 0 && errno == ESRCH)
 		if ((statuspid = getstatusbarpid()) < 0)
 			break;
 }
