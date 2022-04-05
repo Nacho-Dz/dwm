@@ -599,12 +599,12 @@ cleanup(void)
 	Monitor *m;
 	size_t i;
 
-    if (statuspid > 0)
-        while (kill(statuspid, SIGTERM) < 0 && errno == ESRCH)
-            if ((statuspid = getstatusbarpid()) < 0)
-                break;
-    if (statuspid > 0)
-        waitpid(statuspid, NULL, 0);
+	if (statuspid > 0)
+		while (kill(statuspid, SIGTERM) < 0 && errno == ESRCH)
+			if ((statuspid = getstatusbarpid()) < 0)
+				break;
+	if (statuspid > 0)
+		waitpid(statuspid, NULL, 0);
 
 	view(&a);
 	selmon->lt[selmon->sellt] = &foo;
