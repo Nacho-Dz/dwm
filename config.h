@@ -16,7 +16,7 @@ static const char normbgcolor[]           = "#2e333e";
 /* inactive window border */
 static const char normbordercolor[]       = "#000000";
 /* font color */
-static const char normfgcolor[]           = "#d3a61f";
+static const char normfgcolor[]           = "#b7a073";
 /* selected tag and window font */
 static const char selfgcolor[]            = "#333333";
 /* bar color */
