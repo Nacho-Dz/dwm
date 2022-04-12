@@ -64,14 +64,6 @@
 #define TAGMASK                 ((1 << LENGTH(tags)) - 1)
 #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
 
-/* try with the default UID */
-#ifndef UID
-#define UID 1000
-#endif
-
-#define STR_(x) #x
-#define STR(x) STR_(x)
-#define DSBLOCKSLOCKFILE        "/run/user/" STR(UID) "/dsblocks.pid"
 #define NOSIGCHAR               '\x0a'
 #define NILL                    INT_MIN
 
@@ -1027,10 +1019,23 @@ getatomprop(Client *c, Atom prop)
 pid_t
 getstatusbarpid()
 {
+    static const char filename[] = "/dsblocks.pid";
+    static const size_t sz = sizeof filename;
+    static char dsblockslockfile[32];
     struct flock fl;
     int fd, ret;
+    char *s;
 
-    if ((fd = open(DSBLOCKSLOCKFILE, O_RDONLY)) == -1)
+    if (dsblockslockfile[0] == '\0') {
+        if ((s = getenv("XDG_RUNTIME_DIR")) == NULL)
+            return -1;
+
+        _Static_assert(sz <= sizeof dsblockslockfile,
+                "filename must fit in dsblockslockfile");
+        memcpy(stpncpy(dsblockslockfile, s, sizeof dsblockslockfile - sz),
+               filename, sz);
+    }
+    if ((fd = open(dsblockslockfile, O_RDONLY)) == -1)
         return -1;
 
     fl.l_type = F_WRLCK;
@@ -1040,10 +1045,8 @@ getstatusbarpid()
     ret = fcntl(fd, F_GETLK, &fl);
     close(fd);
 
-    if (ret == -1 || fl.l_type != F_WRLCK) {
-        unlink(DSBLOCKSLOCKFILE);
+    if (ret == -1 || fl.l_type != F_WRLCK)
         return -1;
-    }
 
     return fl.l_pid;
 }
