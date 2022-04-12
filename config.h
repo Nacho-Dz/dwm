@@ -4,7 +4,7 @@
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int gappx     = 6;        /* gap pixel between windows */
-static int swallowfloating          = 0;        /* 1 means swallow floating windows by default */
+static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "monospace:size=11" };
@@ -38,7 +38,7 @@ enum {
 };
 
 /* tagging */
-static const char *tags[] = { "", "", "", "", "", "", "", "", "" };
+static const char *const tags[] = { "", "", "", "", "", "", "", "", "" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -48,6 +48,7 @@ static const Rule rules[] = {
 	/* class            instance     title       	 tags mask    isfloating   isterminal   noswallow   monitor */
 	{ "Gimp",           NULL,        NULL,       	 0,           1,           0,           0,          -1 },
 	{ "st-256color",    NULL,        "st",           1 << 1,      0,           1,           0,          -1 },
+	{ "st-256color",    NULL,        "abduco",       1 << 2,      0,           1,           0,          -1 },
 	{ "Lariza",         NULL,        NULL,           1 << 3,      0,           0,           0,          -1 },
 	{ "Brave-browser",  NULL,        NULL,           1 << 3,      0,           0,           0,          -1 },
 	{ "discord",        NULL,        NULL,           1 << 4,      0,           0,           0,          -1 },
@@ -91,7 +92,7 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *termcmd[]  = { terminal, NULL };
 static const char *passcmd[]  = { "passmenu", NULL };
 
-static Key keys[] = {
+static const Key keys[] = {
 	/* modifier         key           function        argument */
 	{ MODKEY,           XK_d,         spawn,          {.v = dmenucmd } },
 	{ MODKEY,           XK_p,         spawn,          {.v = passcmd } },
@@ -127,7 +128,6 @@ static Key keys[] = {
 	TAGKEYS(            XK_8,                         7)
 	TAGKEYS(            XK_9,                         8)
 	{ MODKEY|ShiftMask, XK_q,         quit,           {0} },
-	{ MODKEY,           XK_BackSpace, spawn,          SPAWN("sysact") },
 	{ MODKEY,           XK_F2,        statusbarcmd,   {.v = (const Arg[]){ SPAWN(terminal, "pulsemixer"), {.i = SIGVOLUME }, {.i = 1 } } } },
 	{ MODKEY,           XK_m,         statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-t"), {.i = SIGVOLUME }, {0} } } },
 	{ MODKEY|ShiftMask, XK_m,         statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "--default-source", "-t"), {.i = SIGVOLUME }, {0} } } },
@@ -135,7 +135,8 @@ static Key keys[] = {
 	{ MODKEY,           XK_period,    statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "-i5"), {.i = SIGVOLUME }, {0} } } },
 	{ MODKEY|ShiftMask, XK_comma,     statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "--default-source", "-d5"), {.i = SIGVOLUME }, {0} } } },
 	{ MODKEY|ShiftMask, XK_period,    statusbarcmd,   {.v = (const Arg[]){ SPAWN("pamixer", "--default-source", "-i5"), {.i = SIGVOLUME }, {0} } } },
-	{ 0,                XK_Print,     spawn,          SHCMD("maim ~/Pictures/screenshots/full/$(date +%s).png") },
+	{ MODKEY,           XK_BackSpace, spawn,          SPAWN("sysact") },
+	{ 0,                XK_Print,     spawn,          SHCMD("maim -u ~/Pictures/screenshots/full/$(date +%s).png") },
 	{ MODKEY,           XK_Print,     spawn,          SPAWN("maimpick") },
 	{ MODKEY,           XK_c,         spawn,          SPAWN("xcolor", "-s") },
 	{ MODKEY,           XK_a,         spawn,          SPAWN("abdmenu") },
@@ -149,7 +150,7 @@ static Key keys[] = {
 
 /* button definitions */
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
-static Button buttons[] = {
+static const Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
