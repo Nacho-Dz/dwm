@@ -1032,7 +1032,7 @@ getstatusbarpid()
         if ((s = getenv("XDG_RUNTIME_DIR")) == NULL)
             return -1;
 
-        _Static_assert(sz <= sizeof dsblockslockfile,
+        _Static_assert(sizeof filename <= sizeof dsblockslockfile,
                 "filename must fit in dsblockslockfile");
         memcpy(stpncpy(dsblockslockfile, s, sizeof dsblockslockfile - sz),
                filename, sz);
