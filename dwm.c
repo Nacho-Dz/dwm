@@ -594,9 +594,10 @@ cleanup(void)
 	Monitor *m;
 	size_t i;
 
-	if ((sbpid = getstatusbarpid()) > 0)
+	if ((sbpid = getstatusbarpid()) > 0) {
 		kill(sbpid, SIGTERM);
 		waitpid(sbpid, NULL, 0);
+	}
 
 	view(&a);
 	selmon->lt[selmon->sellt] = &foo;
