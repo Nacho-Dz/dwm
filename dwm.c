@@ -590,15 +590,13 @@ cleanup(void)
 {
 	Arg a = {.ui = ~0};
 	Layout foo = { "", NULL };
+	pid_t sbpid;
 	Monitor *m;
 	size_t i;
 
-	if (statuspid > 0)
-		while (kill(statuspid, SIGTERM) < 0 && errno == ESRCH)
-			if ((statuspid = getstatusbarpid()) < 0)
-				break;
-	if (statuspid > 0)
-		waitpid(statuspid, NULL, 0);
+	if ((sbpid = getstatusbarpid()) > 0)
+		kill(sbpid, SIGTERM);
+		waitpid(sbpid, NULL, 0);
 
 	view(&a);
 	selmon->lt[selmon->sellt] = &foo;
@@ -1021,36 +1019,36 @@ getatomprop(Client *c, Atom prop)
 pid_t
 getstatusbarpid()
 {
-    static const char filename[] = "/dsblocks.pid";
-    static const size_t sz = sizeof filename;
-    static char dsblockslockfile[32];
-    struct flock fl;
-    int fd, ret;
-    char *s;
+	static const char filename[] = "/dsblocks.pid";
+	static const size_t sz = sizeof filename;
+	static char dsblockslockfile[32];
+	struct flock fl;
+	int fd, ret;
+	char *s;
 
-    if (dsblockslockfile[0] == '\0') {
-        if ((s = getenv("XDG_RUNTIME_DIR")) == NULL)
-            return -1;
+	if (dsblockslockfile[0] == '\0') {
+		if ((s = getenv("XDG_RUNTIME_DIR")) == NULL)
+			return -1;
 
-        _Static_assert(sizeof filename <= sizeof dsblockslockfile,
-                "filename must fit in dsblockslockfile");
-        memcpy(stpncpy(dsblockslockfile, s, sizeof dsblockslockfile - sz),
-               filename, sz);
-    }
-    if ((fd = open(dsblockslockfile, O_RDONLY)) == -1)
-        return -1;
+		_Static_assert(sizeof filename <= sizeof dsblockslockfile,
+				"filename must fit in dsblockslockfile");
+		memcpy(stpncpy(dsblockslockfile, s, sizeof dsblockslockfile - sz),
+			filename, sz);
+	}
+	if ((fd = open(dsblockslockfile, O_RDONLY)) == -1)
+		return -1;
 
-    fl.l_type = F_WRLCK;
-    fl.l_whence = SEEK_SET;
-    fl.l_start = 0;
-    fl.l_len = 0;
-    ret = fcntl(fd, F_GETLK, &fl);
-    close(fd);
+	fl.l_type = F_WRLCK;
+	fl.l_whence = SEEK_SET;
+	fl.l_start = 0;
+	fl.l_len = 0;
+	ret = fcntl(fd, F_GETLK, &fl);
+	close(fd);
 
-    if (ret == -1 || fl.l_type != F_WRLCK)
-        return -1;
+	if (ret == -1 || fl.l_type != F_WRLCK)
+		return -1;
 
-    return fl.l_pid;
+	return fl.l_pid;
 }
 
 int
@@ -2053,12 +2051,12 @@ void
 statusbarcmd(const Arg *arg)
 {
 	pid_t childpid;
-    union sigval sv;
+	union sigval sv;
 
 	if (((Arg *)arg->v)[2].i && fork() != 0)
 		return;
 	childpid = spawn_((char *const *)(((Arg *)arg->v)[0].v));
-	
+
 	waitpid(childpid, NULL, 0);
 	sv.sival_int = NILL;
 	while (sigqueue(statuspid, SIGRTMIN + ((Arg *)arg->v)[1].i, sv) < 0 && errno == ESRCH)
@@ -2541,13 +2539,13 @@ viewprev(const Arg *arg)
 {
 	view(&(const Arg){.ui = prevtag()});
 }
- 
+
 void
 viewprevused(const Arg *arg)
 {
 	view(&(const Arg){.ui = prevusedtag()});
 }
- 
+
 Client *
 wintoclient(Window w)
 {
