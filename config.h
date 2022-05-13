@@ -137,7 +137,7 @@ static const Key keys[] = {
 	{ MODKEY,           XK_BackSpace, spawn,          SPAWN("sysact") },
 	{ 0,                XK_Print,     spawn,          SHCMD("maim -u ~/Pictures/screenshots/full/$(date +%s).png") },
 	{ MODKEY,           XK_Print,     spawn,          SPAWN("maimpick") },
-	{ MODKEY,           XK_c,         spawn,          SPAWN("xcolor", "-s") },
+	{ MODKEY,           XK_c,         spawn,          SPAWN("sxcs", "clip") },
 	{ MODKEY,           XK_a,         spawn,          SPAWN("abdmenu") },
 	{ MODKEY,           XK_w,         spawn,          SPAWN("lariza") },
 	{ MODKEY|ShiftMask, XK_w,         spawn,          SPAWN("brave") },
