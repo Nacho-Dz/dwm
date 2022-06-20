@@ -12,15 +12,15 @@ static const char dmenufont[]       = "monospace:size=11";
 
 /* colorscheme */
 /* background */
-static const char normbgcolor[]           = "#2e333e";
+static const char normbgcolor[]           = "#2b7b82";
 /* inactive window border */
 static const char normbordercolor[]       = "#000000";
 /* font color */
-static const char normfgcolor[]           = "#b7a073";
+static const char normfgcolor[]           = "#f4e3c9";
 /* selected tag and window font */
-static const char selfgcolor[]            = "#333333";
+static const char selfgcolor[]            = "#000000";
 /* bar color */
-static const char selbgcolor[]            = "#faf1c8";
+static const char selbgcolor[]            = "#7e9c92";
 /* active window border */
 static const char selbordercolor[]        = "#808080";
 static const char *colors[][3] = {
