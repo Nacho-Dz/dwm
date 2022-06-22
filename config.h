@@ -20,7 +20,7 @@ static const char normfgcolor[]           = "#f4e3c9";
 /* selected tag and window font */
 static const char selfgcolor[]            = "#000000";
 /* bar color */
-static const char selbgcolor[]            = "#7e9c92";
+static const char selbgcolor[]            = "#d1baaa";
 /* active window border */
 static const char selbordercolor[]        = "#808080";
 static const char *colors[][3] = {
